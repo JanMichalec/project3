@@ -44,10 +44,10 @@ stages:
         command: 'init'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         backendServiceArm: '$(azureServiceConnectionId)'
-        backendAzureRmResourceGroupName: 'tfstate'
-        backendAzureRmStorageAccountName: 'tfstate1724231149'
-        backendAzureRmContainerName: 'tfstate'
-        backendAzureRmKey: 'test.terraform.tfstate'
+        backendAzureRmResourceGroupName: 'tfstate' # added
+        backendAzureRmStorageAccountName: 'tfstate2861532491' # added
+        backendAzureRmContainerName: 'tfstate' # added
+        backendAzureRmKey: 'test.terraform.tfstate' 
 
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
       displayName: Terraform validate
@@ -173,6 +173,7 @@ stages:
 # DEPLOYMENT STAGE
 #--------------------------------------------#    
 - stage: Deploy
+  dependsOn: Build
   jobs:
   #--------------------------------------------#  
   # Deploy FakeRestAPI Web App
