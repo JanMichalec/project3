@@ -223,11 +223,9 @@ stages:
         inputs:
           targetType: 'inline'
           script: |
-                unzip -o $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip -d .
-                sudo mkdir /var/logs
+                unzip -o $(Pipeline.Workspace)/drop-uitests/$(Build.BuildId)-uitests.zip -d .
                 python3 ui_test.py > ui-logs.log
                 cat ui-logs.log
-                sudo mv ui-logs.log /var/logs
         displayName: 'S Test' 
 
 
