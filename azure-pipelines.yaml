@@ -197,11 +197,11 @@ stages:
             sudo apt-get upgrade -y
             sudo apt-get install python3-pip -y
             sudo apt-get install unzip -y
-            sudo apt-get install -y chromium-browser
+            sudo apt-get install -y chromium-browser=114.0.5735.90
             pip3 install selenium
 
             # chrome driver
-            wget https://chromedriver.storage.googleapis.com/115.0.5790.102/chromedriver_linux64.zip
+            wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
             unzip chromedriver_linux64.zip
             sudo mv chromedriver /usr/local/bin/chromedriver
             sudo chmod +x /usr/local/bin/chromedriver
