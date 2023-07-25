@@ -199,17 +199,14 @@ stages:
             sudo apt-get install unzip -y
             sudo apt-get install -y chromium-browser
             pip3 install selenium
-            FILE=chromedriver_linux64.zip
-            if [ -f "$FILE" ]; then
-              echo "$FILE exists."
-            else
-              wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
-            fi
-            # install chrome driver
+
+            # chrome driver
+            wget https://chromedriver.storage.googleapis.com/115.0.5790.102/chromedriver_linux64.zip
             unzip chromedriver_linux64.zip
-            sudo mv chromedriver /usr/bin/chromedriver
-            sudo chown root:root /usr/bin/chromedriver
-            sudo chmod +x /usr/bin/chromedriver
+            sudo mv chromedriver /usr/local/bin/chromedriver
+            sudo chmod +x /usr/local/bin/chromedriver
+
+            # check versions
             chromium-browser -version
             chromedriver --version
         displayName: 'Install Selenium'
