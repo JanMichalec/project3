@@ -170,7 +170,7 @@ stages:
   # ToDo: Provide <environment name> you created in your DevOps project
     - deployment: FakeRestAPI
       pool:
-        vmImage: 'image'      
+        vmImage: 'linux-test'      
       environment: '$(environmentName)'   # added
       strategy:
         runOnce:
