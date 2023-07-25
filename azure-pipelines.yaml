@@ -160,34 +160,34 @@ stages:
       artifact: drop-perftests
 
 
-#--------------------------------------------#  
-# DEPLOYMENT STAGE
-#--------------------------------------------#    
-- stage: Deploy
-  dependsOn: Build
-  jobs:
-  #--------------------------------------------#  
-  # Deploy FakeRestAPI Web App
-  # ToDo: Provide <environment name> you created in your DevOps project
-    - deployment: FakeRestAPI
-      pool:
-        vmImage: 'Ubuntu-20.04'      
-      environment: '$(environmentName)'   # added
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - task: AzureWebApp@1
-              displayName: 'Deploy Azure Web App'
-              inputs:
-                azureSubscription: 'myServiceConnection'     # Added
-                appName: 'myApplication-AppService-honza'               # Added
-                appType: webApp
-                package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'      # Added
+# #--------------------------------------------#  
+# # DEPLOYMENT STAGE
+# #--------------------------------------------#    
+# - stage: Deploy
+#   dependsOn: Build
+#   jobs:
+#   #--------------------------------------------#  
+#   # Deploy FakeRestAPI Web App
+#   # ToDo: Provide <environment name> you created in your DevOps project
+#     - deployment: FakeRestAPI
+#       pool:
+#         vmImage: 'Ubuntu-20.04'      
+#       environment: '$(environmentName)'   # added
+#       strategy:
+#         runOnce:
+#           deploy:
+#             steps:
+#             - task: AzureWebApp@1
+#               displayName: 'Deploy Azure Web App'
+#               inputs:
+#                 azureSubscription: 'myServiceConnection'     # Added
+#                 appName: 'myApplication-AppService-honza'               # Added
+#                 appType: webApp
+#                 package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'      # Added
 
 ### TESTS
 - stage: Tests
-  dependsOn: Deploy
+  # dependsOn: Deploy
   jobs: 
     - job: Tests
       displayName: 'Tests'
