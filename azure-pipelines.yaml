@@ -215,16 +215,13 @@ stages:
                 sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
             fi
             export PATH=$PATH:/home/testuser/app
-            echo "Starting Selenium Tests"
-            python3 ./automatedtesting/selenium/ui_test.py >> selenium.log
-            echo "Completed Selenium Tests. Check selenium.log for results."
         displayName: 'Selenium Test'
       - task: Bash@3
         inputs:
           targetType: 'inline'
           script: |
                 ls ./automatedtesting/selenium
-                python3 ui_test.py > ui-logs.log
+                python3 ./automatedtesting/selenium/ui_test.py > ui-logs.log
                 cat ui-logs.log
         displayName: 'S Test' 
 
