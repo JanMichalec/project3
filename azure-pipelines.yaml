@@ -183,18 +183,51 @@ stages:
                 appName: 'myApplication-AppService-honza'               # Added
                 appType: webApp
                 package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'      # Added
-            #--------------------------------------------#    
-            # Run JMeter test suite against the App Service
-            - task: CmdLine@2
-              inputs:
-                script: |
-                  wget "https://apache.mirrors.lucidnetworks.net//jmeter/binaries/apache-jmeter-5.2.1.tgz"
-                  tar -xf apache-jmeter-5.2.1.tgz
-                  unzip -o $(Build.BuildId)-perftests.zip
-                  ./apache-jmeter-5.2.1/bin/jmeter -n -t Test.jmx -j jmeter.log -f
-                  cat jmeter.log                                                                           # ToDo: Write your commands
-                workingDirectory: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip            # ToDo: Use the artifact name from the task above
-              
+
+
+### TESTS
+- stage: Tests
+  jobs: 
+    - job: Tests
+      displayName: 'Tests'
+      steps:
+      - task: JMeterInstaller@0
+        inputs:
+         jmeterVersion: '5.2.1'
+        displayName: 'Install JMeter 5.2.1' 
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: |
+             jmeter -n -t ./automatedtesting/jmeter/Test.jmx -l ./automatedtesting/jmeter/test_result.csv -e -o ./automatedtesting/jmeter/test_html_report/ -j ./automatedtesting/jmeter/test.log
+        displayName: 'Jmeter Stress Test' 
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: 'automatedtesting/jmeter'
+          ArtifactName: 'jmeter'
+          publishLocation: 'Container'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   #--------------------------------------------#  
   # Selenium | Functional UI Tests
   # ToDo: 
