@@ -219,6 +219,16 @@ stages:
             python3 ./automatedtesting/selenium/ui_test.py >> selenium.log
             echo "Completed Selenium Tests. Check selenium.log for results."
         displayName: 'Selenium Test'
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: |
+                unzip -o $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip -d .
+                sudo mkdir /var/logs
+                python3 ui_test.py > ui-logs.log
+                cat ui-logs.log
+                sudo mv ui-logs.log /var/logs
+        displayName: 'S Test' 
 
 
 
