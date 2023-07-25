@@ -9,6 +9,8 @@ PASSWORD = "secret_sauce"
 print ('Starting the browser...')
 options = ChromeOptions()
 options.add_argument("--headless") 
+options.add_argument("--no-sandbox") 
+options.add_argument("--disable-dev-shm-usage") 
 service = Service(executable_path=r'/usr/local/bin/chromedriver')
 driver = webdriver.Chrome(service=service, options=options)
 print ('Browser started successfully. Navigating to the demo page to login.')
