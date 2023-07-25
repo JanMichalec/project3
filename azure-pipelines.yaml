@@ -159,6 +159,45 @@ stages:
       displayName: 'Upload Package'
       artifact: drop-perftests
 
+
+
+
+
+
+
+
+
+
+
+
+
+### TESTS
+- stage: Tests
+  jobs: 
+    - job: Tests
+      displayName: 'Tests'
+      steps:
+      - task: JMeterInstaller@0
+        inputs:
+         jmeterVersion: '5.5'
+        displayName: 'Install JMeter' 
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: |
+            sudo apt-get install openjdk-11-jre-headless -y
+            jmeter -n -t ./automatedtesting/jmeter/Test.jmx -l ./automatedtesting/jmeter/test_result.csv -e -o ./automatedtesting/jmeter/test_html_report/ -j ./automatedtesting/jmeter/test.log
+        displayName: 'Jmeter Stress Test' 
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: 'automatedtesting/jmeter'
+          ArtifactName: 'jmeter'
+          publishLocation: 'Container'
+
+
+
+
+
 #--------------------------------------------#  
 # DEPLOYMENT STAGE
 #--------------------------------------------#    
@@ -185,27 +224,6 @@ stages:
                 package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'      # Added
 
 
-### TESTS
-- stage: Tests
-  jobs: 
-    - job: Tests
-      displayName: 'Tests'
-      steps:
-      - task: JMeterInstaller@0
-        inputs:
-         jmeterVersion: '5.2.1'
-        displayName: 'Install JMeter 5.2.1' 
-      - task: Bash@3
-        inputs:
-          targetType: 'inline'
-          script: |
-             jmeter -n -t ./automatedtesting/jmeter/Test.jmx -l ./automatedtesting/jmeter/test_result.csv -e -o ./automatedtesting/jmeter/test_html_report/ -j ./automatedtesting/jmeter/test.log
-        displayName: 'Jmeter Stress Test' 
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: 'automatedtesting/jmeter'
-          ArtifactName: 'jmeter'
-          publishLocation: 'Container'
 
 
 
