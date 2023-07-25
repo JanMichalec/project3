@@ -37,7 +37,7 @@ cart = driver.find_element(By.CLASS_NAME, "shopping_cart_container")
 cart.click()
 
 cart_content = driver.find_elements(By.CLASS_NAME, "cart_item")
-# assert len(cart_content) == 6  # make sure that the cart has 6 items
+assert len(cart_content) == 6  # make sure that the cart has 6 items
 
 # remove from the cart
 print("---------- REMOVING ITEMS FROM THE CART ----------")
