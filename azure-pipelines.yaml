@@ -199,23 +199,20 @@ stages:
             sudo apt-get install unzip -y
             sudo apt-get install -y chromium-browser
             pip3 install selenium
-            cd ~/
-            DIR=/home/testuser/app
-            if [ ! -d "$DIR" ]; then
-                mkdir app
+            FILE=chromedriver_linux64.zip
+            if [ -f "$FILE" ]; then
+              echo "$FILE exists."
+            else
+              wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
             fi
-            mv /home/testuser/azagent/_work/1/drop-uitests/$(Build.BuildId)-uitests.zip app
-            cd app
-            unzip -o $(Build.BuildId)-uitests.zip
-            FILE=/home/testuser/app/chromedriver_linux64.zip
-            if [ ! -f "$FILE" ]; then
-                LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-                wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
-                unzip -o chromedriver_linux64.zip
-                sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
-            fi
-            export PATH=$PATH:/home/testuser/app
-        displayName: 'Selenium Test'
+            # install chrome driver
+            unzip chromedriver_linux64.zip
+            sudo mv chromedriver /usr/bin/chromedriver
+            sudo chown root:root /usr/bin/chromedriver
+            sudo chmod +x /usr/bin/chromedriver
+            chromium-browser -version
+            chromedriver --version
+        displayName: 'Install Selenium'
       - task: Bash@3
         inputs:
           targetType: 'inline'
@@ -223,7 +220,7 @@ stages:
                 ls ./automatedtesting/selenium
                 python3 ./automatedtesting/selenium/ui_test.py > ui-logs.log
                 cat ui-logs.log
-        displayName: 'S Test' 
+        displayName: 'Selenium Test' 
 
 
 
