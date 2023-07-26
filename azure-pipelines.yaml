@@ -174,9 +174,19 @@ stages:
         inputs:
           targetType: 'inline'
           script: |
-             jmeter -n -t ./automatedtesting/jmeter/Test.jmx -j jmeter.log -f
+             jmeter -n -t ./automatedtesting/jmeter/Test.jmx -l jmeter/report.jtl -e -o html_report -j jmeter.log -f
              cat jmeter.log
         displayName: 'Jmeter Test' 
+      - task: ArchiveFiles@2
+        displayName: 'Archive Jmeter report'
+        inputs:
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/html_report'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-html_report.zip'
+      - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-html_report.zip   # Same as the archiveFile artifact above. 
+        displayName: 'Upload Package'
+        artifact: html_report
       - task: Bash@3
         inputs:
           targetType: 'inline'
