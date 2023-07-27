@@ -92,6 +92,7 @@ stages:
       condition: always()
       inputs:
         testResultsFiles: '$(System.DefaultWorkingDirectory)/*.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
         testResultsFormat: 'JUnit'
         mergeTestResults: true
 
