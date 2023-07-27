@@ -9,7 +9,7 @@
 location = "East US"
 # resource_group_name = "Azuredevops1"  #changed
 application_type = "myApplication"
-resource_group = "Azuredevops"  # added
+resource_group = "Azuredevops2"  # added
 
 # Network
 virtual_network_name = ""
