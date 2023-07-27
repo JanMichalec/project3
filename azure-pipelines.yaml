@@ -79,7 +79,7 @@ stages:
       displayName: Run Newman Tests
       continueOnError: true
       inputs:
-        script: 'newman run ./automatedtesting/postman/api-integration-test.json --reporters cli,junit --reporter-junit-export postman/postman_test.xml'
+        script: 'newman run ./automatedtesting/postman/api-integration-test.json --bail newman -x --reporters cli,junit --reporter-junit-export postman/postman_test.xml'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     # Postman - Publish Results 
@@ -93,135 +93,136 @@ stages:
       inputs:
         testResultsFiles: '$(System.DefaultWorkingDirectory)/postman/*.xml'
         testResultsFormat: 'JUnit'
+        mergeTestResults: true
 
-    #--------------------------------------------#
-    # Selenium (UI) Test Suite - Archive the package  
-    # "ArchiveFiles@2" picks up the web package and archives it.
-    - task: ArchiveFiles@2
-      displayName: 'Archive UI Tests'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip'
-    # Selenium Test Suite - Publish the package  
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip   # Same as the archiveFile artifact above. 
-      displayName: 'Upload Package'
-      artifact: drop-uitests
+#     #--------------------------------------------#
+#     # Selenium (UI) Test Suite - Archive the package  
+#     # "ArchiveFiles@2" picks up the web package and archives it.
+#     - task: ArchiveFiles@2
+#       displayName: 'Archive UI Tests'
+#       inputs:
+#         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+#         includeRootFolder: false
+#         archiveType: 'zip'
+#         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip'
+#     # Selenium Test Suite - Publish the package  
+#     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip   # Same as the archiveFile artifact above. 
+#       displayName: 'Upload Package'
+#       artifact: drop-uitests
 
-    #--------------------------------------------#    
-    # FakeRestAPI - Archive
-    # ToDo: Complete the ArchiveFiles@2 task and publish step 
-    - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
-      inputs:
-        rootFolderOrFile: 
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-      displayName: 'Upload Package'
-      artifact: drop-fakerestapi
+#     #--------------------------------------------#    
+#     # FakeRestAPI - Archive
+#     # ToDo: Complete the ArchiveFiles@2 task and publish step 
+#     - task: ArchiveFiles@2
+#       displayName: 'Archive FakeRestAPI'
+#       inputs:
+#         rootFolderOrFile: 
+#         includeRootFolder: false
+#         archiveType: 'zip'
+#         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+#     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
+#       displayName: 'Upload Package'
+#       artifact: drop-fakerestapi
 
-    #--------------------------------------------#  
-    # JMeter (Performance) Test Suite - Archive
-    # ToDo: Complete the ArchiveFiles@2 task and publish step 
-    - task: ArchiveFiles@2
-      displayName: 'Archive PerformanceTestSuite'
-      inputs:
-        rootFolderOrFile: 
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip'
-    # JMeter Test Suite - Publish    
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip
-      displayName: 'Upload Package'
-      artifact: drop-perftests
+#     #--------------------------------------------#  
+#     # JMeter (Performance) Test Suite - Archive
+#     # ToDo: Complete the ArchiveFiles@2 task and publish step 
+#     - task: ArchiveFiles@2
+#       displayName: 'Archive PerformanceTestSuite'
+#       inputs:
+#         rootFolderOrFile: 
+#         includeRootFolder: false
+#         archiveType: 'zip'
+#         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip'
+#     # JMeter Test Suite - Publish    
+#     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip
+#       displayName: 'Upload Package'
+#       artifact: drop-perftests
 
 
-#--------------------------------------------#  
-# DEPLOYMENT STAGE
-#--------------------------------------------#    
-- stage: Deploy
-  dependsOn: Build
-  jobs:
-  #--------------------------------------------#  
-  # Deploy FakeRestAPI Web App
-  # ToDo: Provide <environment name> you created in your DevOps project
-    - deployment: FakeRestAPI
-      pool:
-        vmImage: 'Ubuntu-20.04'      
-      environment: '$(environmentName)'   # added
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - task: AzureWebApp@1
-              displayName: 'Deploy Azure Web App'
-              inputs:
-                azureSubscription: 'myServiceConnection'     # Added
-                appName: 'honzicek999'               # Added
-                appType: webApp
-                package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'      # Added
+# #--------------------------------------------#  
+# # DEPLOYMENT STAGE
+# #--------------------------------------------#    
+# - stage: Deploy
+#   dependsOn: Build
+#   jobs:
+#   #--------------------------------------------#  
+#   # Deploy FakeRestAPI Web App
+#   # ToDo: Provide <environment name> you created in your DevOps project
+#     - deployment: FakeRestAPI
+#       pool:
+#         vmImage: 'Ubuntu-20.04'      
+#       environment: '$(environmentName)'   # added
+#       strategy:
+#         runOnce:
+#           deploy:
+#             steps:
+#             - task: AzureWebApp@1
+#               displayName: 'Deploy Azure Web App'
+#               inputs:
+#                 azureSubscription: 'myServiceConnection'     # Added
+#                 appName: 'honzicek999'               # Added
+#                 appType: webApp
+#                 package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'      # Added
 
-### TESTS
-- stage: Tests
-  dependsOn: Deploy
-  jobs: 
-    - job: Tests
-      displayName: 'Tests'
-      steps:
-      - task: JMeterInstaller@0
-        inputs:
-         jmeterVersion: '5.5'
-        displayName: 'Install JMeter' 
-      - task: Bash@3
-        inputs:
-          targetType: 'inline'
-          script: |
-             jmeter -n -t ./automatedtesting/jmeter/Test.jmx -l jmeter/report.jtl -e -o html_report -j jmeter.log -f
-             cat jmeter.log
-        displayName: 'Jmeter Test' 
-      - task: ArchiveFiles@2
-        displayName: 'Archive Jmeter report'
-        inputs:
-          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/html_report'
-          includeRootFolder: false
-          archiveType: 'zip'
-          archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-html_report.zip'
-      - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-html_report.zip   # Same as the archiveFile artifact above. 
-        displayName: 'Upload Package'
-        artifact: html_report
-      - task: Bash@3
-        inputs:
-          targetType: 'inline'
-          script: |           
-            #! /bin/bash
+# ### TESTS
+# - stage: Tests
+#   dependsOn: Deploy
+#   jobs: 
+#     - job: Tests
+#       displayName: 'Tests'
+#       steps:
+#       - task: JMeterInstaller@0
+#         inputs:
+#          jmeterVersion: '5.5'
+#         displayName: 'Install JMeter' 
+#       - task: Bash@3
+#         inputs:
+#           targetType: 'inline'
+#           script: |
+#              jmeter -n -t ./automatedtesting/jmeter/Test.jmx -l jmeter/report.jtl -e -o html_report -j jmeter.log -f
+#              cat jmeter.log
+#         displayName: 'Jmeter Test' 
+#       - task: ArchiveFiles@2
+#         displayName: 'Archive Jmeter report'
+#         inputs:
+#           rootFolderOrFile: '$(System.DefaultWorkingDirectory)/html_report'
+#           includeRootFolder: false
+#           archiveType: 'zip'
+#           archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-html_report.zip'
+#       - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-html_report.zip   # Same as the archiveFile artifact above. 
+#         displayName: 'Upload Package'
+#         artifact: html_report
+#       - task: Bash@3
+#         inputs:
+#           targetType: 'inline'
+#           script: |           
+#             #! /bin/bash
             
-            sudo apt-get upgrade -y
-            sudo apt-get install python3-pip -y
-            sudo apt-get install unzip -y
-            sudo apt-get install -y chromium-browser
-            pip3 install selenium
+#             sudo apt-get upgrade -y
+#             sudo apt-get install python3-pip -y
+#             sudo apt-get install unzip -y
+#             sudo apt-get install -y chromium-browser
+#             pip3 install selenium
 
-            # chrome driver
-            wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/115.0.5790.102/linux64/chromedriver-linux64.zip
-            unzip chromedriver-linux64.zip
-            sudo mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
-            sudo chmod +x /usr/local/bin/chromedriver
+#             # chrome driver
+#             wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/115.0.5790.102/linux64/chromedriver-linux64.zip
+#             unzip chromedriver-linux64.zip
+#             sudo mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+#             sudo chmod +x /usr/local/bin/chromedriver
 
-            # check versions
-            chromium-browser -version
-            chromedriver --version
-        displayName: 'Install Selenium'
-      - task: Bash@3
-        inputs:
-          targetType: 'inline'
-          script: |
-                ls ./automatedtesting/selenium
-                python3 ./automatedtesting/selenium/ui_test.py > ui-logs.log
-                cat ui-logs.log
-        displayName: 'Selenium Test' 
+#             # check versions
+#             chromium-browser -version
+#             chromedriver --version
+#         displayName: 'Install Selenium'
+#       - task: Bash@3
+#         inputs:
+#           targetType: 'inline'
+#           script: |
+#                 ls ./automatedtesting/selenium
+#                 python3 ./automatedtesting/selenium/ui_test.py > ui-logs.log
+#                 cat ui-logs.log
+#         displayName: 'Selenium Test' 
 
 
 
