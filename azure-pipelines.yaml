@@ -79,7 +79,7 @@ stages:
       displayName: Run Newman Tests
       continueOnError: true
       inputs:
-        script: 'newman run ./automatedtesting/postman/api-integration-test.json --bail newman -x --reporters cli,junit --reporter-junit-export postman/postman_test.xml'
+        script: 'newman run ./automatedtesting/postman/api-integration-test.json --bail newman -x --reporters cli,junit --reporter-junit-export postman_test.xml'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     # Postman - Publish Results 
@@ -91,7 +91,7 @@ stages:
     - task: PublishTestResults@2
       condition: always()
       inputs:
-        testResultsFiles: '$(System.DefaultWorkingDirectory)/postman/*.xml'
+        testResultsFiles: '$(System.DefaultWorkingDirectory)/*.xml'
         testResultsFormat: 'JUnit'
         mergeTestResults: true
 
