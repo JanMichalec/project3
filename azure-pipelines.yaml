@@ -77,9 +77,8 @@ stages:
     # ToDo: Verify the working directory
     - task: CmdLine@2
       displayName: Run Newman Tests
-      continueOnError: true
       inputs:
-        script: 'newman run ./automatedtesting/postman/api-integration-test.json --bail newman -x --reporters cli,junit --reporter-junit-export postman_test.xml'
+        script: 'newman run automatedtesting/postman/api-integration-test.json --bail newman -x --reporters cli,junit --reporter-junit-export postman_test.xml'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       continueOnError: true
     # Postman - Publish Results 
@@ -91,10 +90,8 @@ stages:
     - task: PublishTestResults@2
       condition: always()
       inputs:
-        testResultsFiles: '$(System.DefaultWorkingDirectory)/*.xml'
-        searchFolder: '$(System.DefaultWorkingDirectory)'
         testResultsFormat: 'JUnit'
-        mergeTestResults: true
+        testResultsFiles: '$(System.DefaultWorkingDirectory)/*.xml'
 
 #     #--------------------------------------------#
 #     # Selenium (UI) Test Suite - Archive the package  
