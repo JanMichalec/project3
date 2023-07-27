@@ -72,6 +72,10 @@ stages:
       displayName: Install Node v12.X
       inputs:
         versionSpec: '12.x'
+    - task: Npm@1
+      inputs:
+        workingDir: '$(System.DefaultWorkingDirectory)'
+        verbose: false
     - task: CmdLine@2
       displayName: Install Newman
       inputs:
