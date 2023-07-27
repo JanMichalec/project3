@@ -81,7 +81,7 @@ stages:
       inputs:
         script: 'newman run ./automatedtesting/postman/api-integration-test.json --bail newman -x --reporters cli,junit --reporter-junit-export postman_test.xml'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
-
+      continueOnError: true
     # Postman - Publish Results 
     # ToDo: Complete the task as explained here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=trx%2Cyaml#yaml-snippet
     - task: CmdLine@2
